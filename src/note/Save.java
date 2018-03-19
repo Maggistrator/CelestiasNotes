@@ -27,8 +27,8 @@ public class Save implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		try {
-			ArrayList<String> sysData = new ArrayList<String>();
 			String name = "Letter " + num;
+			ArrayList<String> sysData = new ArrayList<String>();
 			BufferedWriter out = null;
 			BufferedWriter sysout = null;
 			BufferedReader sysin = null;
@@ -40,11 +40,9 @@ public class Save implements ActionListener {
 			else {
 				sysin = new BufferedReader(new FileReader(reg));
 				subsysin = new BufferedReader(new FileReader(reg));
-				System.out.println("Files:");
 				while (subsysin.readLine() != null) {
 					String current = sysin.readLine();
 					sysData.add(current);
-					System.out.println("" + current);
 				}
 			}
 			if (!sysData.isEmpty())
