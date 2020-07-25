@@ -1,19 +1,13 @@
 package note;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 
 /**
  * Main frame of the application
@@ -51,6 +44,7 @@ public class GUIMain extends JFrame {
         textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
         textArea.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        textArea.setDisabledTextColor(Color.black);
         this.setMinimumSize(new Dimension(400, 550));
         this.setLocationRelativeTo(null);
         packLetterMenu();
@@ -71,7 +65,7 @@ public class GUIMain extends JFrame {
         JMenuItem letter_Save = new JMenuItem("Save");
         JMenuItem letter_Exit = new JMenuItem("Exit");
         // setting action listeners to a menu items
-        letter_Open.addActionListener(new Load(this, textArea));
+        letter_Open.addActionListener(new Load(this));
         letter_Save.addActionListener(new Save(datetimeLabel, textArea));
         letter_Exit.addActionListener((event) -> System.exit(0));
         // adding all created submenues to a menu
@@ -87,15 +81,10 @@ public class GUIMain extends JFrame {
         JMenu jmMode = new JMenu("Mode");
         JMenuItem mode_Read = new JMenuItem("Read");
         JMenuItem mode_Write = new JMenuItem("Write");
-        // name is necessary for displaying correct frame title
-        mode_Read.setName("Read Mode");
-        mode_Write.setName("Write Mode");
         // action listener that responsible for changing mode from read to write and vice-versa
         ActionListener modeSwitch = (ActionEvent e) -> {
-            if(e.getActionCommand().equals("disable")) textArea.setEnabled(false);
-            else textArea.setEnabled(true);
-            parent.setTitle(parent.getName() + ": " + ((JMenuItem)e.getSource()).getName());
-            parent.repaint();
+            if (e.getActionCommand().equals("disable")) setMode(MODE_READ);
+            else setMode(MODE_WRITE);
         };
         // action commands help mode switch to decide, how to react to event - enabling or disabling TA
         mode_Read.setActionCommand("disable");
@@ -114,7 +103,7 @@ public class GUIMain extends JFrame {
         JMenu jmHelp = new JMenu("Help");
         JMenuItem jmiAbout = new JMenuItem("About");
         jmiAbout.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(this, 
+            JOptionPane.showMessageDialog(this,
                     "<html>"
                     + "Возможно, Принцесса никогда не прочитает эти письма.<br>"
                     + "Но будучи через время прочитанными ВАМИ, они помогут Вам вспомнить,<br>"
@@ -124,5 +113,26 @@ public class GUIMain extends JFrame {
         });
         jmHelp.add(jmiAbout);
         jmb.add(jmHelp);
+    }
+
+    
+    public void setMode(int mode) {
+        if(mode == MODE_WRITE) {
+            textArea.setEnabled(true);
+            textArea.setBackground(Color.white);
+            add(datetimeLabel, BorderLayout.PAGE_START);
+            setTitle(getName() + ": " + "Write Mode");
+            pack();
+        } else if(mode == MODE_READ){
+            textArea.setEnabled(false);
+            textArea.setBackground(Color.lightGray);
+            remove(datetimeLabel);
+            setTitle(getName() + ": " + "Read Mode");
+            pack();
+        }
+    }
+    
+    public void setLetterText(String t) {
+        textArea.setText(t);
     }
 }
