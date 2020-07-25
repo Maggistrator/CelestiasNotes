@@ -119,13 +119,13 @@ public class GUIMain extends JFrame {
     public void setMode(int mode) {
         if(mode == MODE_WRITE) {
             textArea.setEnabled(true);
-            textArea.setBackground(Color.white);
+            textArea.setOpaque(true);
             add(datetimeLabel, BorderLayout.PAGE_START);
             setTitle(getName() + ": " + "Write Mode");
             pack();
         } else if(mode == MODE_READ){
             textArea.setEnabled(false);
-            textArea.setBackground(Color.lightGray);
+            textArea.setOpaque(false);
             remove(datetimeLabel);
             setTitle(getName() + ": " + "Read Mode");
             pack();
