@@ -37,7 +37,7 @@ public class GUIMain extends JFrame {
         JPanel newContentContainer = new JPanel();
         newContentContainer.setAlignmentX(LEFT_ALIGNMENT);
         setContentPane(newContentContainer);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         Calendar calendar = new GregorianCalendar();
         DateFormat humanReadableDate = DateFormat.getDateInstance();
         datetimeLabel.setText("Дорогая Принцесса Селестия! Сегодня, " + humanReadableDate.format(calendar.getTime()) + ".");
@@ -54,6 +54,12 @@ public class GUIMain extends JFrame {
         setLayout(new BorderLayout());
         this.add(datetimeLabel, BorderLayout.PAGE_START);
         this.add(textArea);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent we){
+                if(askForSave()) System.exit(0); 
+            }
+        });
         this.pack();
     }
 
@@ -67,8 +73,10 @@ public class GUIMain extends JFrame {
         JMenuItem letter_Exit = new JMenuItem("Exit");
         // setting action listeners to a menu items
         letter_Create.addActionListener((event)->{
-            setLetterText("");
-            setMode(MODE_WRITE);
+            if(askForSave()){
+                setLetterText("");
+                setMode(MODE_WRITE);
+            }
         });
         letter_Open.addActionListener(new Load(this));
         letter_Save.addActionListener(new Save(datetimeLabel, textArea));
@@ -114,7 +122,7 @@ public class GUIMain extends JFrame {
                     + "Возможно, Принцесса никогда не прочитает эти письма.<br>"
                     + "Но будучи через время прочитанными ВАМИ, они помогут Вам вспомнить,<br>"
                     + "помогут принять правильные решения, и не заблудиться в своей же голове.<br>"
-                    + "Это - дневники разработчика, это - <b>Celestia's Notes</b>."
+                    + "Это - ваши дневники, это - <b>Celestia's Notes</b>."
                     + "</html>");
         });
         jmHelp.add(jmiAbout);
@@ -136,6 +144,22 @@ public class GUIMain extends JFrame {
             setTitle(getName() + ": " + "Read Mode");
             pack();
         }
+    }
+    
+    /**
+    *   OK or NO - treated as true
+    *   CANSEL or CLOSING THE WINDOW treated as false
+    */
+    public boolean askForSave() {
+        int answer = JOptionPane.NO_OPTION;
+        if(!textArea.getText().isBlank()){
+            answer = JOptionPane.showConfirmDialog(this, "You have something written. Do you want to save it?");
+            if(answer == JOptionPane.YES_OPTION) {
+                Save temporarySaver = new Save(datetimeLabel, textArea);
+                temporarySaver.actionPerformed(null);
+            }
+        }
+        return (answer == JOptionPane.YES_OPTION | answer == JOptionPane.NO_OPTION);
     }
     
     public void setLetterText(String t) {
