@@ -61,14 +61,20 @@ public class GUIMain extends JFrame {
         // creating file (aka "letter") menu
         JMenu jmLetter = new JMenu("File");
         // creating submenues for each file functions: save and load
+        JMenuItem letter_Create = new JMenuItem("Create");
         JMenuItem letter_Open = new JMenuItem("Open");
         JMenuItem letter_Save = new JMenuItem("Save");
         JMenuItem letter_Exit = new JMenuItem("Exit");
         // setting action listeners to a menu items
+        letter_Create.addActionListener((event)->{
+            setLetterText("");
+            setMode(MODE_WRITE);
+        });
         letter_Open.addActionListener(new Load(this));
         letter_Save.addActionListener(new Save(datetimeLabel, textArea));
         letter_Exit.addActionListener((event) -> System.exit(0));
         // adding all created submenues to a menu
+        jmLetter.add(letter_Create);
         jmLetter.add(letter_Open);
         jmLetter.add(letter_Save);
         jmLetter.addSeparator();
